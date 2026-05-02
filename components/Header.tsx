@@ -16,6 +16,9 @@ export default function Header() {
           <Link href="/blog" className="hover:text-blue-600 transition-colors">
             文章
           </Link>
+          <Link href="/projects" className="hover:text-blue-600 transition-colors">
+            项目
+          </Link>
           <Link href="/about" className="hover:text-blue-600 transition-colors">
             关于
           </Link>

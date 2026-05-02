@@ -12,7 +12,15 @@ interface Post {
   readingTime: string;
 }
 
-export default function ClientBlogList({ posts }: { posts: Post[] }) {
+export default function ClientBlogList({
+  posts,
+  currentPage = 1,
+  totalPages = 1,
+}: {
+  posts: Post[];
+  currentPage?: number;
+  totalPages?: number;
+}) {
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredPosts = posts.filter(post =>
@@ -61,6 +69,40 @@ export default function ClientBlogList({ posts }: { posts: Post[] }) {
           <p className="text-gray-500">没有找到相关文章。</p>
         )}
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex justify-center gap-2 mt-10">
+          {currentPage > 1 && (
+            <Link
+              href={`/blog?page=${currentPage - 1}`}
+              className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 transition-colors text-sm"
+            >
+              ← 上一页
+            </Link>
+          )}
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <Link
+              key={page}
+              href={`/blog?page=${page}`}
+              className={`px-4 py-2 rounded text-sm transition-colors ${
+                page === currentPage
+                  ? 'bg-blue-600 text-white'
+                  : 'border border-gray-300 hover:bg-gray-50'
+              }`}
+            >
+              {page}
+            </Link>
+          ))}
+          {currentPage < totalPages && (
+            <Link
+              href={`/blog?page=${currentPage + 1}`}
+              className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 transition-colors text-sm"
+            >
+              下一页 →
+            </Link>
+          )}
+        </div>
+      )}
     </main>
   );
 }

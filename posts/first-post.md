@@ -2,6 +2,7 @@
 title: "我的第一篇博客"
 date: "2026-03-20"
 description: "这是我在 Next.js 博客旅程中的第一篇文章，纪念一下！"
+tags: ["Next.js", "学习笔记"]
 ---
 
 # 你好，世界！
@@ -13,5 +14,15 @@ description: "这是我在 Next.js 博客旅程中的第一篇文章，纪念一
 - 学会了 Next.js 动态路由
 - 学会了 Markdown 语法
 - 坚持打卡第三天！
+
+## 代码示例
+
+```typescript
+function greet(name: string): string {
+  return `Hello, ${name}!`;
+}
+
+console.log(greet("World"));
+```
 
 > 千里之行，始于足下。

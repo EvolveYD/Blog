@@ -1,6 +1,8 @@
 // app/layout.tsx
 import './globals.css';
 import type { Metadata } from 'next';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: 'EvolveYD.Blog',
@@ -14,8 +16,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
-      <body className="antialiased">
-        {children}
+      <body suppressHydrationWarning className="antialiased min-h-screen flex flex-col transition-colors">
+        <Header />
+        <div className="flex-1">{children}</div>
+        <Footer />
       </body>
     </html>
   );

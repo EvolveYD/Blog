@@ -9,8 +9,6 @@ export default function ThemeToggle() {
     const savedTheme = localStorage.getItem('theme');
     const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-    console.log('[ThemeToggle] init, savedTheme:', savedTheme, 'systemDark:', systemPrefersDark);
-
     if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
       setIsDark(true);
       document.documentElement.classList.add('dark');
@@ -20,7 +18,6 @@ export default function ThemeToggle() {
 
   const toggleTheme = () => {
     const newIsDark = !isDark;
-    console.log('[ThemeToggle] click, newIsDark:', newIsDark);
     setIsDark(newIsDark);
 
     if (newIsDark) {
@@ -32,9 +29,6 @@ export default function ThemeToggle() {
       document.body.classList.remove('dark');
       localStorage.setItem('theme', 'light');
     }
-
-    console.log('[ThemeToggle] html classes:', document.documentElement.className);
-    console.log('[ThemeToggle] body classes:', document.body.className);
   };
 
   return (

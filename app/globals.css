@@ -72,6 +72,64 @@ html.dark .article-card {
 }
 
 /* ========================================
+   TOC sidebar
+   ======================================== */
+.toc-sidebar {
+  font-size: 0.8rem;
+}
+.toc-title {
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #374151;
+}
+.toc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-left: 2px solid #e5e7eb;
+}
+.toc-item-h3 {
+  padding-left: 0.75rem;
+}
+.toc-link {
+  display: block;
+  padding: 0.25rem 0.75rem;
+  color: #6b7280;
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  margin-left: -2px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.toc-link:hover {
+  color: #374151;
+}
+.toc-link-active {
+  color: #2563eb;
+  border-left-color: #2563eb;
+}
+html.dark .toc-title { color: #d1d5db; }
+html.dark .toc-list { border-left-color: #374151; }
+html.dark .toc-link { color: #9ca3af; }
+html.dark .toc-link:hover { color: #e5e7eb; }
+html.dark .toc-link-active { color: #60a5fa; border-left-color: #60a5fa; }
+
+/* ========================================
+   Reading progress bar
+   ======================================== */
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: #3b82f6;
+  z-index: 100;
+  transition: width 0.1s ease-out;
+}
+html.dark .reading-progress {
+  background: #60a5fa;
+}
+
+/* ========================================
    Code blocks (rehype-pretty-code)
    ======================================== */
 [data-rehype-pretty-code-fragment] {

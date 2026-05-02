@@ -9,6 +9,7 @@ interface Post {
   date: string;
   description: string;
   tags: string[];
+  readingTime: string;
 }
 
 export default function ClientBlogList({ posts }: { posts: Post[] }) {
@@ -42,6 +43,7 @@ export default function ClientBlogList({ posts }: { posts: Post[] }) {
               <h2 className="text-xl font-bold text-blue-600 mb-2">{post.title}</h2>
               <div className="flex items-center gap-3 mb-3">
                 <p className="text-sm text-gray-500">{post.date}</p>
+                <span className="text-sm text-gray-400">· {post.readingTime}</span>
                 {post.tags.length > 0 && (
                   <div className="flex gap-1.5">
                     {post.tags.map((tag) => (

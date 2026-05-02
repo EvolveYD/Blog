@@ -17,6 +17,24 @@ html.dark body {
 /* Header/Footer borders */
 html.dark header { border-color: #1e293b !important; }
 html.dark footer { border-color: #1e293b !important; }
+html.dark header a { color: #f9fafb !important; }
+html.dark header a:hover { color: #60a5fa !important; }
+html.dark header .text-blue-600 { color: #60a5fa !important; }
+html.dark footer { color: #9ca3af !important; }
+html.dark footer a { color: #60a5fa !important; }
+html.dark footer a:hover { color: #93c5fd !important; }
+
+/* About page */
+html.dark .about-heading { color: #f9fafb !important; }
+html.dark .about-text { color: #d1d5db !important; }
+html.dark .about-tech-tag { background: #1f2937 !important; color: #d1d5db !important; }
+html.dark .about-bullet { color: #60a5fa !important; }
+html.dark .about-link { color: #60a5fa !important; }
+html.dark .about-link:hover { color: #93c5fd !important; }
+
+/* Home page */
+html.dark .hero-title { color: #60a5fa !important; }
+html.dark .hero-desc { color: #d1d5db !important; }
 
 /* Post cards */
 html.dark .post-card {

@@ -4,10 +4,10 @@ export default function Home() {
   return (
     <main className="flex min-h-[calc(100vh-65px)] flex-col items-center justify-center p-24">
       <div className="z-10 w-full max-w-5xl text-center lg:text-left font-mono text-sm">
-        <h1 className="text-4xl font-bold tracking-tight mb-4 text-blue-600">
+        <h1 className="hero-title text-4xl font-bold tracking-tight mb-4 text-blue-600">
           EvolveYD&#39;s Blog
         </h1>
-        <p className="text-lg text-gray-600 mb-8">
+        <p className="hero-desc text-lg text-gray-600 mb-8">
           欢迎来到我的技术成长空间 | 记录从 0 到 1 的构建之旅
         </p>
 

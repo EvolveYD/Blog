@@ -245,3 +245,34 @@ html.dark .secret-input:focus {
 html.dark .secret-content {
   color: #f9fafb !important;
 }
+
+/* ========================================
+   GitHub Star Button
+   ======================================== */
+.gh-star-btn {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  color: #374151;
+}
+.gh-star-btn:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+.gh-star-count {
+  border-left: 1px solid #d1d5db;
+  padding-left: 0.5rem;
+  margin-left: 0.125rem;
+}
+
+html.dark .gh-star-btn {
+  background: #1e293b !important;
+  border-color: #374151 !important;
+  color: #f9fafb !important;
+}
+html.dark .gh-star-btn:hover {
+  background: #334155 !important;
+  border-color: #4b5563 !important;
+}
+html.dark .gh-star-count {
+  border-color: #4b5563 !important;
+}

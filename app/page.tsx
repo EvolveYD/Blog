@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import GitHubStarButton from '@/components/GitHubStarButton';
 
 export const metadata: Metadata = {
   title: 'EvolveYD.Blog',
@@ -32,13 +33,14 @@ export default function Home() {
           欢迎来到我的技术成长空间 | 记录从 0 到 1 的构建之旅
         </p>
 
-        <div className="flex gap-4 justify-center lg:justify-start">
+        <div className="flex gap-4 items-center justify-center lg:justify-start">
           <Link href="/blog" className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
             开始阅读
           </Link>
           <Link href="/about" className="btn-outline px-6 py-2 border border-gray-300 rounded hover:bg-gray-100 transition-colors">
             关于我
           </Link>
+          <GitHubStarButton />
         </div>
       </div>
     </main>

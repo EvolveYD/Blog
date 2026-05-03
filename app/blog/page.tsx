@@ -1,5 +1,15 @@
 import { getSortedPostsData } from '@/lib/posts';
 import ClientBlogList from '@/components/ClientBlogList';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: '博客文章',
+  description: '浏览所有技术文章，涵盖 Next.js、React、TypeScript、算法等。',
+  openGraph: {
+    title: '博客文章 | EvolveYD.Blog',
+    url: '/blog',
+  },
+};
 
 const POSTS_PER_PAGE = 10;
 

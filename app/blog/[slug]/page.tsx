@@ -18,9 +18,23 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const postData = await getPostData(slug);
+  const title = `${postData.title} | EvolveYD.Blog`;
   return {
-    title: `${postData.title} | EvolveYD.Blog`,
+    title,
     description: postData.description,
+    openGraph: {
+      title,
+      description: postData.description,
+      type: 'article',
+      publishedTime: postData.date,
+      tags: postData.tags,
+      url: `/blog/${slug}`,
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description: postData.description,
+    },
   };
 }
 
@@ -28,8 +42,30 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
   const { slug } = await params;
   const postData = await getPostData(slug);
 
+  const blogPosting = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: postData.title,
+    description: postData.description,
+    datePublished: postData.date,
+    author: { '@type': 'Person', name: 'EvolveYD' },
+    url: `https://evolveyd.top/blog/${slug}`,
+  };
+
+  const breadcrumb = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: '首页', item: 'https://evolveyd.top' },
+      { '@type': 'ListItem', position: 2, name: '博客', item: 'https://evolveyd.top/blog' },
+      { '@type': 'ListItem', position: 3, name: postData.title, item: `https://evolveyd.top/blog/${slug}` },
+    ],
+  };
+
   return (
     <main className="max-w-5xl mx-auto px-4 py-12">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPosting) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
       <Link href="/blog" className="text-blue-600 hover:underline mb-8 inline-block">
         ← 返回博客列表
       </Link>

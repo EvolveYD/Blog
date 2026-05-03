@@ -6,8 +6,28 @@ import Footer from '@/components/Footer';
 import ReadingProgress from '@/components/ReadingProgress';
 
 export const metadata: Metadata = {
-  title: 'EvolveYD.Blog',
-  description: '我的 Next.js 博客',
+  metadataBase: new URL('https://evolveyd.top'),
+  title: {
+    default: 'EvolveYD.Blog',
+    template: '%s | EvolveYD.Blog',
+  },
+  description: 'EvolveYD 的技术博客 — 记录从 0 到 1 的 Web 开发之旅，涵盖 Next.js、React、TypeScript 等技术栈的学习笔记与项目实战。',
+  openGraph: {
+    type: 'website',
+    locale: 'zh_CN',
+    siteName: 'EvolveYD.Blog',
+    title: 'EvolveYD.Blog',
+    description: '记录从 0 到 1 的 Web 开发之旅',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'EvolveYD.Blog',
+    description: '记录从 0 到 1 的 Web 开发之旅',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

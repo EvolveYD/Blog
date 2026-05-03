@@ -1,4 +1,14 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: '关于我',
+  description: 'EvolveYD — 计算机专业学生，记录从 0 到 1 的 Web 开发成长历程。',
+  openGraph: {
+    title: '关于我 | EvolveYD.Blog',
+    url: '/about',
+  },
+};
 
 export default function AboutPage() {
   return (

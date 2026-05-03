@@ -1,8 +1,28 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'EvolveYD.Blog',
+  description: 'EvolveYD 的技术博客 — 记录从 0 到 1 的 Web 开发之旅，涵盖 Next.js、React、TypeScript 等技术栈。',
+  openGraph: {
+    title: 'EvolveYD.Blog',
+    description: '记录从 0 到 1 的 Web 开发之旅',
+    url: '/',
+  },
+};
 
 export default function Home() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'EvolveYD.Blog',
+    url: 'https://evolveyd.top',
+    description: 'EvolveYD 的技术博客 — 记录从 0 到 1 的 Web 开发之旅',
+  };
+
   return (
     <main className="flex min-h-[calc(100vh-65px)] flex-col items-center justify-center p-24">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div className="z-10 w-full max-w-5xl text-center lg:text-left font-mono text-sm">
         <h1 className="hero-title text-4xl font-bold tracking-tight mb-4 text-blue-600">
           EvolveYD&#39;s Blog

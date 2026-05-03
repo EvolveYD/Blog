@@ -28,6 +28,11 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  verification: {
+    other: {
+      'baidu-site-verification': 'codeva-tYXH9PPxeV',
+    },
+  },
 };
 
 export default function RootLayout({

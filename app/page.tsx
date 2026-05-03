@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: 'EvolveYD.Blog',
     description: '记录从 0 到 1 的 Web 开发之旅',
     url: '/',
-    images: [{ url: '/og', width: 1200, height: 630, alt: 'EvolveYD.Blog' }],
+    images: [{ url: 'https://evolveyd.top/og', width: 1200, height: 630, alt: 'EvolveYD.Blog' }],
   },
 };
 

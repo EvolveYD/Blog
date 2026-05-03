@@ -20,13 +20,14 @@ export async function GET(request: Request) {
           justifyContent: 'space-between',
         }}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           <div
             style={{
-              fontSize: 52,
+              fontSize: 48,
               fontWeight: 800,
               color: '#f8fafc',
-              lineHeight: 1.3,
+              lineHeight: 1.4,
+              wordBreak: 'break-word',
               display: 'flex',
             }}
           >
@@ -34,7 +35,7 @@ export async function GET(request: Request) {
           </div>
           <div
             style={{
-              fontSize: 26,
+              fontSize: 24,
               color: '#94a3b8',
               display: 'flex',
               lineHeight: 1.5,

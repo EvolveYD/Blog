@@ -189,3 +189,59 @@ html.dark code:not(pre code) {
 
 html.dark .prose blockquote { color: #9ca3af !important; }
 html.dark .prose a { color: #60a5fa !important; }
+
+/* ========================================
+   Secret Page
+   ======================================== */
+.secret-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 2.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.secret-input {
+  background: #ffffff;
+  border-color: #d1d5db;
+  color: #111827;
+}
+.secret-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+}
+
+.secret-btn {
+  background: #2563eb;
+  color: #ffffff;
+}
+.secret-btn:hover {
+  background: #1d4ed8;
+}
+
+.secret-error {
+  color: #dc2626;
+}
+
+.secret-content {
+  color: #111827;
+}
+
+/* Secret Page - Dark Mode */
+html.dark .secret-card {
+  background: #111827 !important;
+  border-color: #1e293b !important;
+}
+html.dark .secret-input {
+  background: #1e293b !important;
+  border-color: #374151 !important;
+  color: #f9fafb !important;
+}
+html.dark .secret-input:focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 2px rgba(59,130,246,0.2) !important;
+}
+html.dark .secret-content {
+  color: #f9fafb !important;
+}

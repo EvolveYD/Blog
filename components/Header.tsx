@@ -22,6 +22,9 @@ export default function Header() {
           <Link href="/about" className="hover:text-blue-600 transition-colors">
             关于
           </Link>
+          <Link href="/secret" className="hover:text-blue-600 transition-colors">
+            秘密
+          </Link>
 
           <ThemeToggle />
         </nav>

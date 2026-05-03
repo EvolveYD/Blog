@@ -29,6 +29,7 @@ export async function generateMetadata({
       publishedTime: postData.date,
       tags: postData.tags,
       url: `/blog/${slug}`,
+      images: [{ url: `/og?title=${encodeURIComponent(postData.title)}`, width: 1200, height: 630, alt: postData.title }],
     },
     twitter: {
       card: 'summary',

@@ -23,7 +23,7 @@ export default function AboutPage() {
           Web 开发的成长历程。
         </p>
         <p className="about-text leading-relaxed">
-          我相信最好的学习方式就是动手做项目。这个博客本身就是一个学习项目 ——
+          最好的学习方式是动手做项目。这个博客本身就是一个学习项目 ——
           从 Next.js 基础到部署上线，每一步都是实战经验。
         </p>
       </section>

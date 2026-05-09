@@ -207,7 +207,8 @@ export default function QuizPage() {
     }
 
     return (
-      <main className="flex min-h-[calc(100vh-65px)] flex-col items-center justify-center p-6">
+      <div className="quiz-bg-wrapper">
+      <main className="flex flex-col items-center justify-center p-6">
         <div className="quiz-card w-full max-w-lg text-center">
           <div className="text-6xl mb-4">
             {percentage >= 80 ? '🎉' : percentage >= 60 ? '👍' : '📚'}
@@ -235,11 +236,13 @@ export default function QuizPage() {
           </div>
         </div>
       </main>
+      </div>
     );
   }
 
   return (
-    <main className="flex min-h-[calc(100vh-65px)] flex-col items-center justify-center p-6">
+    <div className="quiz-bg-wrapper">
+    <main className="flex flex-col items-center justify-center p-6">
       <div className="quiz-card w-full max-w-lg">
         <div className="quiz-card-header">
           <div className="quiz-progress-meta">
@@ -312,5 +315,6 @@ export default function QuizPage() {
         </div>
       </div>
     </main>
+    </div>
   );
 }

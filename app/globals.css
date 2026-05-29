@@ -280,6 +280,31 @@ html.dark .gh-star-count {
 /* ========================================
    Quiz Page
    ======================================== */
+.quiz-bg-wrapper {
+  position: relative;
+  min-height: calc(100vh - 65px);
+  background-image: url('/quiz-bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.quiz-bg-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.5);
+  z-index: 0;
+}
+
+.quiz-bg-wrapper > * {
+  position: relative;
+  z-index: 1;
+}
+
+html.dark .quiz-bg-wrapper::before {
+  background: rgba(3, 7, 18, 0.5);
+}
 .quiz-card {
   background: #ffffff;
   border: 1px solid #e5e7eb;

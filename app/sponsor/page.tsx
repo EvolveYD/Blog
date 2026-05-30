@@ -61,7 +61,29 @@ export default function SponsorPage() {
 
         <div className="heart-3d-wrapper" onClick={handleHeartClick}>
           <div className="heart-3d-glow" />
-          <div className="heart-3d" />
+          <div className="heart-3d">
+            <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#f9a8d4" />
+                  <stop offset="40%" stopColor="#ec4899" />
+                  <stop offset="100%" stopColor="#be185d" />
+                </linearGradient>
+                <radialGradient id="hglow" cx="50%" cy="35%" r="50%">
+                  <stop offset="0%" stopColor="rgba(255,255,255,0.35)" />
+                  <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+                </radialGradient>
+              </defs>
+              <path
+                d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"
+                fill="url(#hg)"
+              />
+              <path
+                d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"
+                fill="url(#hglow)"
+              />
+            </svg>
+          </div>
         </div>
 
         <div className="sponsor-qr-wrap">

@@ -667,7 +667,7 @@ html.dark .quiz-btn-primary:hover {
   width: clamp(120px, 18vw, 200px);
 }
 
-/* ─── 3D Heart ─── */
+/* ─── 3D Heart (SVG) ─── */
 .heart-3d-wrapper {
   perspective: 600px;
   cursor: pointer;
@@ -675,43 +675,27 @@ html.dark .quiz-btn-primary:hover {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  width: clamp(120px, 18vw, 200px);
 }
 
 .heart-3d {
-  width: 80px;
-  height: 80px;
-  position: relative;
+  width: 110px;
+  height: 110px;
   transform-style: preserve-3d;
   animation: heart-breathe 2s ease-in-out infinite, heart-rotate 6s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(236, 72, 153, 0.5));
 }
 
-.heart-3d::before,
-.heart-3d::after {
-  content: '';
-  position: absolute;
-  width: 80px;
-  height: 128px;
-  border-radius: 80px 80px 0 0;
-  background: linear-gradient(180deg, #f472b6, #ec4899, #db2777);
-  box-shadow: 0 0 30px rgba(236, 72, 153, 0.4), inset 0 -10px 30px rgba(0,0,0,0.1);
-}
-
-.heart-3d::before {
-  left: 40px;
-  transform: rotate(-45deg);
-  transform-origin: 0 100%;
-}
-
-.heart-3d::after {
-  left: 0;
-  transform: rotate(45deg);
-  transform-origin: 100% 100%;
+.heart-3d svg {
+  width: 100%;
+  height: 100%;
 }
 
 .heart-3d-glow {
   position: absolute;
-  width: 160px;
-  height: 160px;
+  width: 180px;
+  height: 180px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(236,72,153,0.2) 0%, transparent 70%);
   z-index: -1;

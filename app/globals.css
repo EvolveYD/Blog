@@ -745,8 +745,8 @@ html.dark .quiz-btn-primary:hover {
   background: linear-gradient(135deg, #f9a8d4 0%, #ec4899 100%);
   color: #ffffff;
   font-weight: 600;
-  font-size: 0.85rem;
-  padding: 0.25rem 0.75rem;
+  font-size: 1rem;
+  padding: 0.4rem 1rem;
   border-radius: 9999px;
   transition: all 0.3s ease;
   white-space: nowrap;

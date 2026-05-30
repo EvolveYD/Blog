@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import GitHubStarButton from '@/components/GitHubStarButton';
+import MusicPlayer from '@/components/MusicPlayer';
 
 export const metadata: Metadata = {
   title: 'EvolveYD.Blog',
@@ -52,6 +53,7 @@ export default function Home() {
           <GitHubStarButton />
         </div>
       </div>
+      <MusicPlayer />
     </main>
   );
 }

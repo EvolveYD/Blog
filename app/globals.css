@@ -782,3 +782,203 @@ html.dark .sponsor-qr:hover {
 html.dark .sponsor-qr-label {
   color: #6b7280 !important;
 }
+
+/* ========================================
+   Pay Gate Page
+   ======================================== */
+.paygate-page {
+  min-height: calc(100vh - 65px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background: linear-gradient(180deg, #fffbeb 0%, #ffffff 100%);
+}
+
+.paygate-loading {
+  color: #9ca3af;
+  font-size: 0.95rem;
+}
+
+.paygate-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.paygate-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #d97706;
+}
+
+.paygate-subtitle {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  margin-top: 0.25rem;
+}
+
+.paygate-amount {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.125rem;
+  margin: 1.5rem 0;
+}
+
+.paygate-currency {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #d97706;
+}
+
+.paygate-price {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #d97706;
+  line-height: 1;
+}
+
+.paygate-qr-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 1.25rem;
+}
+
+.paygate-qr-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.paygate-qr {
+  width: 140px;
+  height: 140px;
+  border-radius: 0.75rem;
+  border: 2px solid #fef3c7;
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.1);
+}
+
+.paygate-qr-label {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  margin-top: 0.375rem;
+}
+
+.paygate-hint {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 1.25rem;
+  line-height: 1.5;
+}
+
+.paygate-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.paygate-input {
+  width: 100%;
+  padding: 0.625rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  background: #ffffff;
+  color: #111827;
+  text-align: center;
+}
+.paygate-input:focus {
+  outline: none;
+  border-color: #d97706;
+  box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2);
+}
+
+.paygate-btn {
+  width: 100%;
+  padding: 0.625rem 1rem;
+  background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+  color: #78350f;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+}
+.paygate-btn:hover {
+  background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+  color: #451a03;
+}
+.paygate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.paygate-error {
+  color: #dc2626;
+  font-size: 0.85rem;
+  margin-top: 0.75rem;
+}
+
+/* Pay Gate - Dark Mode */
+html.dark .paygate-page {
+  background: linear-gradient(180deg, #1a1206 0%, #030712 100%) !important;
+}
+
+html.dark .paygate-card {
+  background: #111827 !important;
+  border-color: #1e293b !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+}
+
+html.dark .paygate-title {
+  color: #fbbf24 !important;
+}
+
+html.dark .paygate-subtitle {
+  color: #6b7280 !important;
+}
+
+html.dark .paygate-currency,
+html.dark .paygate-price {
+  color: #fbbf24 !important;
+}
+
+html.dark .paygate-qr {
+  border-color: #78350f !important;
+  box-shadow: 0 2px 8px rgba(251, 191, 36, 0.15) !important;
+}
+
+html.dark .paygate-qr-label {
+  color: #6b7280 !important;
+}
+
+html.dark .paygate-hint {
+  color: #9ca3af !important;
+}
+
+html.dark .paygate-input {
+  background: #1e293b !important;
+  border-color: #374151 !important;
+  color: #f9fafb !important;
+}
+html.dark .paygate-input:focus {
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2) !important;
+}
+
+html.dark .paygate-btn {
+  background: linear-gradient(135deg, #d97706 0%, #ea580c 100%) !important;
+  color: #fef3c7 !important;
+}
+html.dark .paygate-btn:hover {
+  background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%) !important;
+  color: #fffbeb !important;
+}

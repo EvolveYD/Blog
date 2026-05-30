@@ -43,7 +43,7 @@ export default function Home() {
           <Link href="/about" className="btn-outline px-6 py-2 border border-gray-300 rounded hover:bg-gray-100 transition-colors">
             关于我
           </Link>
-          <Link href="/scientist-brain.html" target="_blank" className="btn-gold px-6 py-2 rounded transition-colors">
+          <Link href="/pay-gate" className="btn-gold px-6 py-2 rounded transition-colors">
             逢考必过
           </Link>
           <Link href="/quiz" className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">

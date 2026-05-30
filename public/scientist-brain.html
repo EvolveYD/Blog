@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>获得同款大脑</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;
+  font-family:"Songti SC","STSong","SimSun","Noto Serif SC",serif}
+
+/* ─── 初始界面 ─── */
+#scene-initial{
+  width:100%;height:100%;position:relative;cursor:pointer;
+  background:#151515;
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .8s ease,filter .8s ease;
+}
+#scene-initial.fade-out{opacity:0;filter:blur(12px);pointer-events:none}
+
+/* 背景科学家蒙太奇 */
+.scientist-grid{
+  position:absolute;inset:0;display:grid;
+  grid-template-columns:repeat(4,1fr);
+  grid-template-rows:repeat(3,1fr);
+  gap:2px;opacity:.85;
+}
+.scientist-cell{
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  background:#1e1e1e;
+}
+/* 每格不同色调 */
+.scientist-cell:nth-child(odd){background:#242424}
+.scientist-cell:nth-child(even){background:#1c1c1c}
+
+/* 暗角 */
+.scientist-cell::after{
+  content:'';position:absolute;inset:0;z-index:2;
+  background:radial-gradient(ellipse at 50% 40%,transparent 20%,rgba(0,0,0,.3) 100%);
+  pointer-events:none;
+}
+
+/* SVG 填充肖像 */
+.scientist-cell svg{
+  position:relative;z-index:1;
+  width:65%;height:80%;
+  filter:contrast(1.2);
+}
+.scientist-cell svg .skin{fill:#707070}
+.scientist-cell svg .hair{fill:#555}
+.scientist-cell svg .cloth{fill:#484848}
+.scientist-cell svg .dark{fill:#3a3a3a}
+
+.scientist-cell .label{
+  position:absolute;bottom:5%;left:0;width:100%;text-align:center;
+  color:rgba(255,255,255,.6);font-size:clamp(10px,1.2vw,16px);
+  letter-spacing:.1em;z-index:3;
+  text-shadow:0 1px 8px rgba(0,0,0,.95);
+}
+.scientist-cell .formula{
+  position:absolute;top:5%;left:8%;
+  color:rgba(255,255,255,.3);font-style:italic;
+  font-size:clamp(9px,1vw,14px);z-index:3;
+  text-shadow:0 1px 4px rgba(0,0,0,.9);
+}
+
+/* 中心遮罩 */
+.overlay{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse at center,rgba(0,0,0,.1) 0%,rgba(0,0,0,.45) 100%);
+  z-index:10;pointer-events:none;
+}
+
+/* 中央提示文字 */
+.prompt-box{
+  position:relative;z-index:11;text-align:center;
+  animation:float 3s ease-in-out infinite;
+}
+.prompt-text{
+  font-size:clamp(24px,3.8vw,56px);font-weight:900;
+  color:#fff;letter-spacing:.1em;
+  text-shadow:0 0 60px rgba(255,255,255,.1),0 2px 16px rgba(0,0,0,.7);
+}
+.prompt-sub{
+  margin-top:14px;font-size:clamp(11px,1.2vw,16px);
+  color:rgba(255,255,255,.3);letter-spacing:.4em;font-weight:400;
+  text-transform:uppercase;
+}
+
+/* 呼吸光圈 */
+.glow-ring{
+  position:absolute;top:50%;left:50%;
+  width:clamp(200px,30vw,420px);height:clamp(200px,30vw,420px);
+  transform:translate(-50%,-50%);border-radius:50%;
+  border:1px solid rgba(255,255,255,.06);z-index:10;
+  animation:ring-pulse 4s ease-in-out infinite;
+}
+.glow-ring:nth-child(2){
+  animation-delay:1.3s;
+  width:clamp(260px,38vw,520px);height:clamp(260px,38vw,520px);
+}
+@keyframes ring-pulse{
+  0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.25}
+  50%{transform:translate(-50%,-50%) scale(1.1);opacity:.05}
+}
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+}
+
+/* ─── 加载界面 ─── */
+#scene-loading{
+  width:100%;height:100%;position:fixed;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity .6s ease;
+  background:#0a0a0a;
+}
+#scene-loading.active{opacity:1;pointer-events:auto}
+
+.loading-title{
+  font-size:clamp(20px,3vw,40px);font-weight:700;
+  color:#fff;letter-spacing:.15em;margin-bottom:50px;
+  opacity:0;
+}
+#scene-loading.active .loading-title{
+  animation:fadeInUp .6s ease forwards;
+}
+
+.loading-bar-track{
+  width:clamp(220px,40vw,500px);height:6px;
+  background:rgba(255,255,255,.08);border-radius:3px;
+  overflow:hidden;position:relative;opacity:0;
+}
+#scene-loading.active .loading-bar-track{
+  animation:fadeInUp .6s .15s ease forwards;
+}
+.loading-bar-fill{
+  width:0%;height:100%;border-radius:3px;
+  background:linear-gradient(90deg,#c9a84c,#f7ca18,#f5d76e);
+  transition:width .05s linear;
+  box-shadow:0 0 12px rgba(247,202,24,.4);
+}
+
+.loading-percent{
+  margin-top:20px;font-size:clamp(14px,1.5vw,22px);
+  color:rgba(255,255,255,.4);letter-spacing:.3em;
+  font-variant-numeric:tabular-nums;opacity:0;
+}
+#scene-loading.active .loading-percent{
+  animation:fadeInUp .6s .3s ease forwards;
+}
+
+@keyframes fadeInUp{
+  from{opacity:0;transform:translateY(15px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* ─── 结果界面 ─── */
+#scene-result{
+  width:100%;height:100%;position:fixed;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity .1s;
+  background:radial-gradient(ellipse at 50% 40%,#1e1e38 0%,#0c0c0c 70%);
+}
+#scene-result.active{opacity:1;pointer-events:auto}
+#particles{position:absolute;inset:0;z-index:0}
+
+.result-text{
+  position:relative;z-index:1;text-align:center;opacity:0;
+}
+.result-text .line{
+  display:block;color:#fff;letter-spacing:.06em;
+  transform:scale(.3);opacity:0;
+}
+.result-text .line1{
+  font-size:clamp(28px,4.5vw,64px);font-weight:900;
+  margin-bottom:28px;
+  background:linear-gradient(135deg,#f5d76e,#f7ca18,#e8a817);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.result-text .line2{
+  font-size:clamp(16px,2.4vw,34px);font-weight:700;
+  color:rgba(255,255,255,.88);margin-bottom:12px;
+}
+.result-text .line3{
+  font-size:clamp(14px,1.6vw,24px);font-weight:400;
+  color:rgba(255,255,255,.5);letter-spacing:.2em;
+}
+.result-text .line.show{
+  animation:bounceIn .9s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+.result-text .line.show:nth-child(2){animation-delay:.35s}
+.result-text .line.show:nth-child(3){animation-delay:.6s}
+@keyframes bounceIn{
+  0%{transform:scale(.2);opacity:0}
+  60%{transform:scale(1.08);opacity:1}
+  80%{transform:scale(.96)}
+  100%{transform:scale(1);opacity:1}
+}
+
+.glow-center{
+  position:absolute;top:50%;left:50%;
+  width:350px;height:350px;transform:translate(-50%,-50%);
+  background:radial-gradient(circle,rgba(247,202,24,.1) 0%,transparent 70%);
+  border-radius:50%;z-index:0;
+  animation:glow-breathe 3s ease-in-out infinite;
+}
+@keyframes glow-breathe{
+  0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.5}
+  50%{transform:translate(-50%,-50%) scale(1.4);opacity:1}
+}
+</style>
+</head>
+<body>
+
+<div id="scene-initial">
+  <div class="scientist-grid">
+
+    <!-- 1 Einstein: 蓬松白发 + 大鼻子 -->
+    <div class="scientist-cell">
+      <svg viewBox="0 0 200 260">
+        <!-- 头发 -->
+        <path class="hair" d="M55 100 Q35 55 50 30 Q65 10 95 8 Q120 5 140 15 Q165 30 160 70 Q158 55 150 42 Q155 60 158 85 Q162 70 170 95 Q175 115 165 120 L160 118 Q155 125 148 120 Q145 130 138 125 Q140 135 132 132 L55 132 Q48 130 45 122 Q38 125 32 118 Q28 110 30 100 Q32 108 38 105 Q35 95 40 88 Q42 95 48 90 Q45 78 50 70 Q52 80 58 75 Q55 65 58 55 Q56 68 62 62 Q58 50 60 42 Q62 55 68 48 Q65 38 68 30 Q70 45 75 40 Q72 28 80 22 Q85 35 90 30 Q92 20 100 18 Q108 20 110 30 Q115 25 120 22 Q125 28 128 35 Q132 28 138 30 Q140 38 145 42 Q148 35 152 40 Q155 48 158 55"/>
+        <!-- 脸 -->
+        <ellipse class="skin" cx="100" cy="120" rx="55" ry="62"/>
+        <!-- 耳朵 -->
+        <ellipse class="skin" cx="46" cy="120" rx="10" ry="16"/>
+        <ellipse class="skin" cx="154" cy="120" rx="10" ry="16"/>
+        <!-- 眼睛 -->
+        <ellipse fill="#2e2e2e" cx="78" cy="110" rx="8" ry="6"/>
+        <ellipse fill="#2e2e2e" cx="122" cy="110" rx="8" ry="6"/>
+        <ellipse fill="#555" cx="80" cy="109" rx="3" ry="3"/>
+        <ellipse fill="#555" cx="124" cy="109" rx="3" ry="3"/>
+        <!-- 眉毛 -->
+        <path class="hair" d="M65 98 Q75 90 90 95" fill="none" stroke="#555" stroke-width="4" stroke-linecap="round"/>
+        <path class="hair" d="M135 98 Q125 90 110 95" fill="none" stroke="#555" stroke-width="4" stroke-linecap="round"/>
+        <!-- 大鼻子 -->
+        <path fill="none" stroke="#5a5a5a" stroke-width="2.5" d="M95 118 Q88 138 82 148 Q88 152 100 152 Q112 152 118 148 Q112 138 105 118"/>
+        <!-- 嘴巴 -->
+        <path fill="none" stroke="#5a5a5a" stroke-width="2" d="M85 165 Q95 172 105 172 Q115 172 118 165"/>
+        <!-- 胡子 -->
+        <path class="hair" d="M72 155 Q65 162 68 170 Q78 178 100 180 Q122 178 132 170 Q135 162 128 155 Q118 165 100 168 Q82 165 72 155Z"/>
+        <!-- 身体 -->
+        <path class="cloth" d="M55 185 Q50 195 48 220 Q46 250 55 260 L145 260 Q155 250 152 220 Q150 195 145 185 Q130 178 100 175 Q70 178 55 185Z"/>
+        <!-- 领带 -->
+        <path fill="#5a5a5a" d="M95 180 L92 210 L100 220 L108 210 L105 180Z"/>
+      </svg>
+      <span class="formula">E=mc²</span>
+      <span class="label">Albert Einstein</span>
+    </div>
+
+    <!-- 2 Newton: 卷长发 + 领子 -->
+    <div class="scientist-cell">
+      <svg viewBox="0 0 200 260">
+        <!-- 长卷发 -->
+        <path class="hair" d="M50 90 Q38 50 55 25 Q75 5 100 5 Q125 5 145 25 Q162 50 150 90 Q158 75 162 95 Q165 115 160 140 Q158 160 155 175 Q153 165 148 155 Q152 170 150 185 Q148 175 143 168 Q146 180 144 190 Q140 180 138 172 Q140 185 138 195 L55 195 Q53 185 55 172 Q52 180 50 188 Q48 175 50 165 Q46 172 45 160 Q42 170 40 155 Q38 165 36 150 Q35 135 38 115 Q40 100 45 90 Q42 100 45 95Z"/>
+        <!-- 脸 -->
+        <ellipse class="skin" cx="100" cy="110" rx="52" ry="58"/>
+        <!-- 眼睛 -->
+        <ellipse fill="#2e2e2e" cx="80" cy="102" rx="7" ry="6"/>
+        <ellipse fill="#2e2e2e" cx="120" cy="102" rx="7" ry="6"/>
+        <circle fill="#383838" cx="82" cy="101" r="3"/>
+        <circle fill="#383838" cx="122" cy="101" r="3"/>
+        <!-- 眉毛 -->
+        <path fill="none" stroke="#555" stroke-width="3" d="M68 92 Q80 86 92 92"/>
+        <path fill="none" stroke="#555" stroke-width="3" d="M132 92 Q120 86 108 92"/>
+        <!-- 鼻子 -->
+        <path fill="none" stroke="#5a5a5a" stroke-width="2" d="M98 108 Q92 125 90 135 Q95 138 100 138 Q105 138 110 135 Q108 125 102 108"/>
+        <!-- 嘴 -->
+        <path fill="none" stroke="#5a5a5a" stroke-width="2" d="M88 150 Q100 158 112 150"/>
+        <!-- 高领 -->
+        <path class="cloth" d="M55 175 Q50 180 48 195 Q55 200 70 202 L130 202 Q145 200 152 195 Q150 180 145 175 Q135 170 100 168 Q65 170 55 175Z"/>
+        <!-- 身体 -->
+        <path class="cloth" d="M48 200 Q42 225 40 260 L160 260 Q158 225 152 200 Q140 195 100 193 Q60 195 48 200Z"/>
+        <!-- 领子花边 -->
+        <path fill="none" stroke="#5a5a5a" stroke-width="1.5" d="M65 200 Q70 210 75 200 Q80 210 85 200 Q90 210 95 200 Q100 210 105 200 Q110 210 115 200 Q120 210 125 200 Q130 210 135 200"/>
+      </svg>
+      <span class="formula">F=ma</span>
+      <span class="label">Isaac Newton</span>
+    </div>
+
+    <!-- 3 Gauss: 短发 + 圆脸 -->
+    <div class="scientist-cell">
+      <svg viewBox="0 0 200 260">
+        <!-- 头发 -->
+        <path class="hair" d="M52 95 Q42 55 60 28 Q80 8 100 8 Q120 8 140 28 Q158 55 148 95 Q152 80 150 65 Q148 50 142 40 Q145 55 145 70 Q148 55 150 45 Q152 35 148 25 Q155 40 155 55 Q158 45 160 60 Q162 75 158 90 L155 100 Q148 105 140 100 Q145 105 138 108 Q130 105 125 100 L52 100 Q45 105 38 100 Q35 105 28 100 Q25 90 28 78 Q30 65 35 55 Q38 65 40 75 Q42 60 45 50 Q48 62 50 75 Q50 60 52 48 Q55 60 55 72 Q55 58 58 48 Q60 60 60 72 Q62 55 65 42 Q65 55 68 65 Q70 50 75 40 Q78 55 80 65 Q82 48 88 38 Q92 50 95 42 Q98 30 105 25 Q110 30 112 40 Q115 30 122 35 Q128 28 135 32 Q140 40 142 50 Q145 42 148 50 Q150 58 150 68"/>
+        <!-- 脸 -->
+        <ellipse class="skin" cx="100" cy="118" rx="52" ry="56"/>
+        <!-- 耳 -->
+        <ellipse class="skin" cx="49" cy="118" rx="9" ry="14"/>
+        <ellipse class="skin" cx="151" cy="118" rx="9" ry="14"/>
+        <!-- 眼 -->
+        <ellipse fill="#2e2e2e" cx="80" cy="110" rx="7" ry="5"/>
+        <ellipse fill="#2e2e2e" cx="120" cy="110" rx="7" ry="5"/>
+        <circle fill="#383838" cx="82" cy="109" r="3"/>
+        <circle fill="#383838" cx="122" cy="109" r="3"/>
+        <!-- 眉 -->
+        <path fill="none" stroke="#555" stroke-width="3" d="M68 100 Q80 94 92 100"/>
+        <path fill="none" stroke="#555" stroke-width="3" d="M132 100 Q120 94 108 100"/>
+        <!-- 鼻 -->
+        <path fill="none" stroke="#5a5a5a" stroke-width="2" d="M98 115 Q93 130 92 138 Q97 142 100 142 Q103 142 108 138 Q107 130 102 115"/>
+        <!-- 嘴 -->
+        <path fill="none" stroke="#5a5a5a" stroke-width="2" d="M88 152 Q100 158 112 152"/>
+        <!-- 衣领 -->
+        <path class="cloth" d="M55 178 Q48 195 45 230 Q44 250 55 260 L145 260 Q156 250 155 230 Q152 195 145 178 Q130 172 100 170 Q70 172 55 178Z"/>
+        <path fill="#525252" d="M75 178 L85 200 L100 210 L115 200 L125 178 Q110 172 100 172 Q90 172 75 178Z"/>
+      </svg>
+      <span class="formula">∑n = n(n+1)/2</span>
+      <span class="label">Carl Friedrich Gauss</span>
+    </div>
+
+    <!-- 4 Mendeleev: 大胡子 + 长发 -->
+    <div class="scientist-cell">
+      <svg viewBox="0 0 200 260">
+        <!-- 长发 -->
+        <path class="hair" d="M42 100 Q30 55 48 25 Q70 5 100 5 Q130 5 152 25 Q170 55 158 100 Q165 80 168 100 Q170 120 168 145 Q166 130 162 118 Q165 135 164 155 Q162 140 158 130 Q160 150 158 165 Q155 150 152 140 Q155 158 153 170 L42 170 Q40 158 42 140 Q38 155 36 142 Q34 158 32 148 Q30 132 32 118 Q30 135 28 125 Q26 110 28 100 Q30 85 35 75 Q32 90 35 98Z"/>
+        <!-- 脸 -->
+        <ellipse class="skin" cx="100" cy="115" rx="50" ry="52"/>
+        <!-- 眼 -->
+        <ellipse fill="#2e2e2e" cx="80" cy="105" rx="7" ry="5"/>
+        <ellipse fill="#2e2e2e" cx="120" cy="105" rx="7" ry="5"/>
+        <circle fill="#383838" cx="82" cy="104" r="3"/>
+        <circle fill="#383838" cx="122" cy="104" r="3"/>
+        <!-- 眉 -->
+        <path fill="none" stroke="#555" stroke-width="4" d="M66 95 Q80 88 94 96"/>
+        <path fill="none" stroke="#555" stroke-width="4" d="M134 95 Q120 88 106 96"/>
+        <!-- 鼻 -->
+        <path fill="none" stroke="#5a5a5a" stroke-width="2" d="M98 110 Q92 128 90 135 Q95 138 100 138 Q105 138 110 135 Q108 128 102 110"/>
+        <!-- 巨大胡子 -->
+        <path class="hair" d="M60 140 Q50 148 48 165 Q50 185 65 200 Q80 212 100 215 Q120 212 135 200 Q150 185 152 165 Q150 148 140 140 Q130 150 120 155 Q110 158 100 158 Q90 158 80 155 Q70 150 60 140Z"/>
+        <!-- 衣 -->
+        <path class="cloth" d="M45 210 Q38 235 36 260 L164 260 Q162 235 155 210 Q140 202 100 200 Q60 202 45 210Z"/>
+      </svg>
+      <span class="formula">H₂O</span>
+      <span class="label">Dmitri Mendeleev</span>
+    </div>
+
+    <!-- 5 Darwin: 大胡子 + 秃顶 -->
+    <div class="scientist-cell">
+      <svg viewBox="0 0 200 260">
+        <!-- 头发（两侧） -->
+        <path class="hair" d="M42 105 Q35 70 50 45 Q65 28 80 25 Q90 30 95 40 Q98 28 105 22 Q112 28 115 38 Q118 25 125 22 Q135 25 148 42 Q165 65 158 105 Q162 85 160 70 Q155 50 145 38 Q148 55 148 72 Q150 55 152 45 Q155 58 155 75 Q158 62 160 50 Q162 65 162 80 Q165 95 160 112 L155 118 Q148 122 140 118 L42 118 Q35 122 28 118 Q22 112 25 98 Q28 82 32 72 Q28 88 30 95 Q32 80 35 68 Q35 82 38 90 Q38 75 40 62 Q40 78 42 88 Q42 72 45 60 Q45 75 48 85 Q48 68 52 55 Q55 68 55 80 Q58 62 62 52 Q65 65 65 78 Q68 58 72 48 Q75 60 78 72 Q80 52 85 42 Q88 55 90 68 Q92 48 98 38 Q102 48 105 58 Q108 42 115 35 Q118 45 120 55 Q125 42 132 40 Q138 50 140 60 Q142 48 148 48 Q152 58 155 68"/>
+        <!-- 脸 -->
+        <ellipse class="skin" cx="100" cy="118" rx="52" ry="52"/>
+        <!-- 耳 -->
+        <ellipse class="skin" cx="48" cy="118" rx="9" ry="14"/>
+        <ellipse class="skin" cx="152" cy="118" rx="9" ry="14"/>
+        <!-- 眼 -->
+        <ellipse fill="#2e2e2e" cx="80" cy="110" rx="7" ry="5"/>
+        <ellipse fill="#2e2e2e" cx="120" cy="110" rx="7" ry="5"/>
+        <circle fill="#383838" cx="82" cy="109" r="3"/>
+        <circle fill="#383838" cx="122" cy="109" r="3"/>
+        <!-- 眉 -->
+        <path fill="none" stroke="#555" stroke-width="4" d="M66 100 Q80 93 94 100"/>
+        <path fill="none" stroke="#555" stroke-width="4" d="M134 100 Q120 93 106 100"/>
+        <!-- 鼻 -->
+        <path fill="none" stroke="#5a5a5a" stroke-width="2" d="M98 115 Q93 130 92 138 Q97 142 100 142 Q103 142 108 138 Q107 130 102 115"/>
+        <!-- 大胡子 -->
+        <path class="hair" d="M58 142 Q48 155 48 175 Q52 195 68 208 Q82 218 100 220 Q118 218 132 208 Q148 195 152 175 Q152 155 142 142 Q132 152 120 158 Q110 162 100 162 Q90 162 80 158 Q68 152 58 142Z"/>
+        <!-- 衣 -->
+        <path class="cloth" d="M48 218 Q40 240 38 260 L162 260 Q160 240 152 218 Q138 210 100 208 Q62 210 48 218Z"/>
+      </svg>
+      <span class="formula">Natural Selection</span>
+      <span class="label">Charles Darwin</span>
+    </div>
+
+    <!-- 6 Marie Curie: 盘发 + 高领 -->
+    <div class="scientist-cell">
+      <svg viewBox="0 0 200 260">
+        <!-- 盘发 -->
+        <path class="hair" d="M55 90 Q45 55 60 30 Q78 10 100 10 Q122 10 140 30 Q155 55 145 90 Q150 72 148 55 Q142 35 130 22 Q115 12 100 12 Q85 12 70 22 Q58 35 52 55 Q50 72 55 90Z"/>
+        <!-- 后盘发髻 -->
+        <ellipse class="hair" cx="100" cy="18" rx="28" ry="16"/>
+        <ellipse class="hair" cx="100" cy="12" rx="20" ry="10"/>
+        <!-- 脸 -->
+        <ellipse class="skin" cx="100" cy="110" rx="46" ry="54"/>
+        <!-- 耳 -->
+        <ellipse class="skin" cx="55" cy="110" rx="8" ry="12"/>
+        <ellipse class="skin" cx="145" cy="110" rx="8" ry="12"/>
+        <!-- 眼 -->
+        <ellipse fill="#2e2e2e" cx="82" cy="102" rx="6" ry="5"/>
+        <ellipse fill="#2e2e2e" cx="118" cy="102" rx="6" ry="5"/>
+        <circle fill="#383838" cx="84" cy="101" r="2.5"/>
+        <circle fill="#383838" cx="120" cy="101" r="2.5"/>
+        <!-- 眉 -->
+        <path fill="none" stroke="#555" stroke-width="2.5" d="M72 94 Q82 89 92 94"/>
+        <path fill="none" stroke="#555" stroke-width="2.5" d="M128 94 Q118 89 108 94"/>
+        <!-- 鼻 -->
+        <path fill="none" stroke="#5a5a5a" stroke-width="2" d="M98 108 Q94 122 93 130 Q97 133 100 133 Q103 133 107 130 Q106 122 102 108"/>
+        <!-- 嘴 -->
+        <path fill="none" stroke="#5a5a5a" stroke-width="1.5" d="M90 142 Q100 147 110 142"/>
+        <!-- 高领裙 -->
+        <path class="cloth" d="M52 168 Q42 185 40 230 Q38 252 50 260 L150 260 Q162 252 160 230 Q158 185 148 168 Q135 160 100 158 Q65 160 52 168Z"/>
+        <!-- 领口 -->
+        <path fill="#525252" d="M68 168 Q75 180 100 185 Q125 180 132 168 Q120 162 100 160 Q80 162 68 168Z"/>
+        <!-- 项链 -->
+        <ellipse fill="#6a6a6a" cx="100" cy="178" rx="5" ry="6"/>
+      </svg>
+      <span class="formula">Ra (88)</span>
+      <span class="label">Marie Curie</span>
+    </div>
+
+    <!-- 7 Galileo: 侧面 + 长发老者 -->
+    <div class="scientist-cell">
+      <svg viewBox="0 0 200 260">
+        <!-- 长发 -->
+        <path class="hair" d="M48 100 Q35 55 55 25 Q78 5 105 8 Q130 12 148 32 Q162 55 155 90 Q160 70 162 90 Q164 115 162 145 Q160 165 156 185 Q155 170 152 158 Q155 175 153 192 L45 192 Q42 175 44 158 Q40 172 38 162 Q35 148 36 135 Q34 150 32 142 Q30 128 32 115 Q30 130 28 122 Q26 108 30 98 Q32 85 38 78 Q35 92 38 98Z"/>
+        <!-- 脸 -->
+        <ellipse class="skin" cx="100" cy="112" rx="50" ry="55"/>
+        <!-- 耳 -->
+        <ellipse class="skin" cx="50" cy="112" rx="9" ry="14"/>
+        <ellipse class="skin" cx="150" cy="112" rx="9" ry="14"/>
+        <!-- 眼 -->
+        <ellipse fill="#2e2e2e" cx="80" cy="104" rx="7" ry="5"/>
+        <ellipse fill="#2e2e2e" cx="120" cy="104" rx="7" ry="5"/>
+        <circle fill="#383838" cx="82" cy="103" r="3"/>
+        <circle fill="#383838" cx="122" cy="103" r="3"/>
+        <!-- 眉 -->
+        <path fill="none" stroke="#555" stroke-width="3.5" d="M66 94 Q80 87 94 95"/>
+        <path fill="none" stroke="#555" stroke-width="3.5" d="M134 94 Q120 87 106 95"/>
+        <!-- 鼻 -->
+        <path fill="none" stroke="#5a5a5a" stroke-width="2" d="M98 110 Q90 130 88 140 Q94 144 100 144 Q106 144 112 140 Q110 130 102 110"/>
+        <!-- 长胡子 -->
+        <path class="hair" d="M60 145 Q50 158 48 180 Q48 200 55 220 Q65 240 80 250 Q90 255 100 256 Q110 255 120 250 Q135 240 145 220 Q152 200 152 180 Q150 158 140 145 Q130 155 118 162 Q108 168 100 168 Q92 168 82 162 Q70 155 60 145Z"/>
+        <!-- 衣 -->
+        <path class="cloth" d="M45 250 Q40 255 42 260 L158 260 Q160 255 155 250 Q145 242 100 240 Q55 242 45 250Z"/>
+      </svg>
+      <span class="formula">v = gt</span>
+      <span class="label">Galileo Galilei</span>
+    </div>
+
+    <!-- 8 Edison: 光头 + 小胡子 -->
+    <div class="scientist-cell">
+      <svg viewBox="0 0 200 260">
+        <!-- 极少头发 -->
+        <path class="hair" d="M55 95 Q45 65 58 40 Q75 18 100 16 Q125 18 142 40 Q155 65 145 95 Q150 75 148 58 Q142 35 128 22 Q112 12 100 12 Q88 12 72 22 Q58 35 52 58 Q50 75 55 95Z"/>
+        <!-- 脸 -->
+        <ellipse class="skin" cx="100" cy="115" rx="50" ry="55"/>
+        <!-- 耳 -->
+        <ellipse class="skin" cx="50" cy="115" rx="9" ry="14"/>
+        <ellipse class="skin" cx="150" cy="115" rx="9" ry="14"/>
+        <!-- 眼 -->
+        <ellipse fill="#2e2e2e" cx="80" cy="108" rx="7" ry="6"/>
+        <ellipse fill="#2e2e2e" cx="120" cy="108" rx="7" ry="6"/>
+        <circle fill="#383838" cx="82" cy="107" r="3"/>
+        <circle fill="#383838" cx="122" cy="107" r="3"/>
+        <!-- 眉 -->
+        <path fill="none" stroke="#555" stroke-width="3.5" d="M66 97 Q80 90 94 98"/>
+        <path fill="none" stroke="#555" stroke-width="3.5" d="M134 97 Q120 90 106 98"/>
+        <!-- 鼻 -->
+        <path fill="none" stroke="#5a5a5a" stroke-width="2" d="M98 114 Q92 130 90 138 Q95 142 100 142 Q105 142 110 138 Q108 130 102 114"/>
+        <!-- 小胡子 -->
+        <path class="hair" d="M82 145 Q78 142 75 145 Q78 150 85 152 Q92 154 100 154 Q108 154 115 152 Q122 150 125 145 Q122 142 118 145 Q112 150 100 150 Q88 150 82 145Z"/>
+        <!-- 嘴 -->
+        <path fill="none" stroke="#5a5a5a" stroke-width="2" d="M88 158 Q100 164 112 158"/>
+        <!-- 西装 -->
+        <path class="cloth" d="M48 185 Q40 210 38 260 L162 260 Q160 210 152 185 Q138 176 100 174 Q62 176 48 185Z"/>
+        <!-- 领带 -->
+        <path fill="#5a5a5a" d="M94 178 L90 210 L100 222 L110 210 L106 178Z"/>
+        <!-- 领子 -->
+        <path fill="none" stroke="#5a5a5a" stroke-width="2" d="M70 182 L94 195 M130 182 L106 195"/>
+      </svg>
+      <span class="formula">1% inspiration</span>
+      <span class="label">Thomas Edison</span>
+    </div>
+
+    <!-- 9 Nobel: 西装 + 尖胡子 -->
+    <div class="scientist-cell">
+      <svg viewBox="0 0 200 260">
+        <!-- 头发 -->
+        <path class="hair" d="M50 100 Q40 60 58 32 Q78 10 100 10 Q122 10 142 32 Q160 60 150 100 Q155 78 152 58 Q145 35 130 22 Q115 12 100 12 Q85 12 70 22 Q55 35 48 58 Q45 78 50 100Z"/>
+        <!-- 后梳 -->
+        <path class="hair" d="M48 100 Q42 105 40 112 Q38 108 42 98 Q40 88 45 78 Q42 92 48 100Z"/>
+        <path class="hair" d="M152 100 Q158 105 160 112 Q162 108 158 98 Q160 88 155 78 Q158 92 152 100Z"/>
+        <!-- 脸 -->
+        <ellipse class="skin" cx="100" cy="115" rx="50" ry="56"/>
+        <!-- 耳 -->
+        <ellipse class="skin" cx="50" cy="115" rx="9" ry="14"/>
+        <ellipse class="skin" cx="150" cy="115" rx="9" ry="14"/>
+        <!-- 眼 -->
+        <ellipse fill="#2e2e2e" cx="80" cy="106" rx="7" ry="5"/>
+        <ellipse fill="#2e2e2e" cx="120" cy="106" rx="7" ry="5"/>
+        <circle fill="#383838" cx="82" cy="105" r="3"/>
+        <circle fill="#383838" cx="122" cy="105" r="3"/>
+        <!-- 眉 -->
+        <path fill="none" stroke="#555" stroke-width="3" d="M68 96 Q80 90 92 96"/>
+        <path fill="none" stroke="#555" stroke-width="3" d="M132 96 Q120 90 108 96"/>
+        <!-- 鼻 -->
+        <path fill="none" stroke="#5a5a5a" stroke-width="2" d="M98 112 Q92 128 90 136 Q96 140 100 140 Q104 140 110 136 Q108 128 102 112"/>
+        <!-- 尖胡子 -->
+        <path class="hair" d="M78 145 Q72 142 70 148 Q75 158 85 162 Q92 165 100 166 Q108 165 115 162 Q125 158 130 148 Q128 142 122 145 Q115 155 100 155 Q85 155 78 145Z"/>
+        <!-- 嘴 -->
+        <path fill="none" stroke="#5a5a5a" stroke-width="2" d="M90 155 Q100 160 110 155"/>
+        <!-- 西装 -->
+        <path class="cloth" d="M45 182 Q38 210 36 260 L164 260 Q162 210 155 182 Q140 172 100 170 Q60 172 45 182Z"/>
+        <!-- 领带 -->
+        <path fill="#5a5a5a" d="M94 175 L88 210 L100 225 L112 210 L106 175Z"/>
+        <path fill="none" stroke="#5a5a5a" stroke-width="2" d="M68 180 L94 195 M132 180 L106 195"/>
+      </svg>
+      <span class="formula">Dynamite</span>
+      <span class="label">Alfred Nobel</span>
+    </div>
+
+    <!-- 10 Bohr: 中分短发 + 圆脸 -->
+    <div class="scientist-cell">
+      <svg viewBox="0 0 200 260">
+        <!-- 中分短发 -->
+        <path class="hair" d="M52 98 Q42 60 58 32 Q78 12 100 12 Q122 12 142 32 Q158 60 148 98 Q155 75 152 55 Q145 32 130 20 Q115 10 100 10 Q85 10 70 20 Q55 32 48 55 Q45 75 52 98Z"/>
+        <!-- 中分线 -->
+        <path class="hair" d="M100 10 Q98 30 95 50 Q93 65 90 80 L95 75 Q98 55 100 30 Q102 55 105 75 L110 80 Q107 65 105 50 Q102 30 100 10Z"/>
+        <!-- 脸 -->
+        <ellipse class="skin" cx="100" cy="118" rx="52" ry="56"/>
+        <!-- 耳 -->
+        <ellipse class="skin" cx="48" cy="118" rx="9" ry="14"/>
+        <ellipse class="skin" cx="152" cy="118" rx="9" ry="14"/>
+        <!-- 眼 -->
+        <ellipse fill="#2e2e2e" cx="80" cy="110" rx="7" ry="5"/>
+        <ellipse fill="#2e2e2e" cx="120" cy="110" rx="7" ry="5"/>
+        <circle fill="#383838" cx="82" cy="109" r="3"/>
+        <circle fill="#383838" cx="122" cy="109" r="3"/>
+        <!-- 眉 -->
+        <path fill="none" stroke="#555" stroke-width="3" d="M68 100 Q80 94 92 100"/>
+        <path fill="none" stroke="#555" stroke-width="3" d="M132 100 Q120 94 108 100"/>
+        <!-- 鼻 -->
+        <path fill="none" stroke="#5a5a5a" stroke-width="2" d="M98 115 Q93 130 92 138 Q97 142 100 142 Q103 142 108 138 Q107 130 102 115"/>
+        <!-- 嘴 -->
+        <path fill="none" stroke="#5a5a5a" stroke-width="2" d="M88 152 Q100 158 112 152"/>
+        <!-- 衣 -->
+        <path class="cloth" d="M48 182 Q40 210 38 260 L162 260 Q160 210 152 182 Q138 174 100 172 Q62 174 48 182Z"/>
+        <!-- 领带 -->
+        <path fill="#5a5a5a" d="M95 176 L92 205 L100 215 L108 205 L105 176Z"/>
+      </svg>
+      <span class="formula">ℏ</span>
+      <span class="label">Niels Bohr</span>
+    </div>
+
+    <!-- 11 Tesla: 中分长发 + 高颧骨 -->
+    <div class="scientist-cell">
+      <svg viewBox="0 0 200 260">
+        <!-- 中分长发 -->
+        <path class="hair" d="M42 105 Q32 60 52 28 Q75 5 100 5 Q125 5 148 28 Q168 60 158 105 Q165 80 165 60 Q162 38 152 25 Q160 42 162 65 Q165 50 168 70 Q170 90 165 115 Q168 100 170 85 Q172 100 170 118 Q168 135 165 155 Q164 140 160 128 Q162 145 160 160 Q158 148 155 138 Q158 155 155 168 L42 168 Q38 155 40 138 Q36 150 34 140 Q32 155 30 145 Q28 130 30 115 Q28 132 26 122 Q24 105 28 92 Q30 78 35 68 Q32 85 35 95Z"/>
+        <!-- 脸 -->
+        <ellipse class="skin" cx="100" cy="115" rx="48" ry="55"/>
+        <!-- 耳 -->
+        <ellipse class="skin" cx="52" cy="115" rx="8" ry="14"/>
+        <ellipse class="skin" cx="148" cy="115" rx="8" ry="14"/>
+        <!-- 眼（深邃） -->
+        <ellipse fill="#2e2e2e" cx="80" cy="106" rx="8" ry="6"/>
+        <ellipse fill="#2e2e2e" cx="120" cy="106" rx="8" ry="6"/>
+        <circle fill="#383838" cx="82" cy="105" r="3"/>
+        <circle fill="#383838" cx="122" cy="105" r="3"/>
+        <!-- 眉（浓） -->
+        <path fill="#555" d="M66 96 Q80 88 94 96 Q88 93 80 94Z"/>
+        <path fill="#555" d="M134 96 Q120 88 106 96 Q112 93 120 94Z"/>
+        <!-- 高颧骨鼻 -->
+        <path fill="none" stroke="#5a5a5a" stroke-width="2.5" d="M98 112 Q88 132 85 142 Q92 146 100 146 Q108 146 115 142 Q112 132 102 112"/>
+        <!-- 嘴 -->
+        <path fill="none" stroke="#5a5a5a" stroke-width="2" d="M86 156 Q100 162 114 156"/>
+        <!-- 高领西装 -->
+        <path class="cloth" d="M48 178 Q40 205 38 260 L162 260 Q160 205 152 178 Q138 170 100 168 Q62 170 48 178Z"/>
+        <!-- 高领 -->
+        <path fill="#525252" d="M62 172 Q58 182 60 192 L140 192 Q142 182 138 172 Q125 166 100 165 Q75 166 62 172Z"/>
+      </svg>
+      <span class="formula">AC ∿</span>
+      <span class="label">Nikola Tesla</span>
+    </div>
+
+    <!-- 12 Da Vinci: 长胡须 + 老者帽 -->
+    <div class="scientist-cell">
+      <svg viewBox="0 0 200 260">
+        <!-- 帽子 -->
+        <path class="dark" d="M45 80 Q40 45 60 25 Q80 10 100 8 Q120 10 140 25 Q160 45 155 80 Q152 60 145 45 Q135 28 120 20 Q108 15 100 15 Q92 15 80 20 Q65 28 55 45 Q48 60 45 80Z"/>
+        <path class="hair" d="M40 80 Q35 85 38 95 L162 95 Q165 85 160 80 Q155 75 145 72 Q130 68 100 66 Q70 68 55 72 Q45 75 40 80Z"/>
+        <!-- 长发（侧面） -->
+        <path class="hair" d="M40 95 Q35 105 32 125 Q30 145 32 160 Q34 148 38 138 Q35 152 35 165 Q38 155 42 145 Q40 158 40 170 L45 165 Q43 150 45 138 Q45 152 48 145 L50 135 Q48 148 50 142"/>
+        <!-- 脸 -->
+        <ellipse class="skin" cx="100" cy="120" rx="48" ry="52"/>
+        <!-- 耳 -->
+        <ellipse class="skin" cx="52" cy="120" rx="8" ry="13"/>
+        <ellipse class="skin" cx="148" cy="120" rx="8" ry="13"/>
+        <!-- 眼（智慧） -->
+        <ellipse fill="#2e2e2e" cx="80" cy="112" rx="7" ry="6"/>
+        <ellipse fill="#2e2e2e" cx="120" cy="112" rx="7" ry="6"/>
+        <circle fill="#383838" cx="82" cy="111" r="3"/>
+        <circle fill="#383838" cx="122" cy="111" r="3"/>
+        <!-- 眉 -->
+        <path fill="none" stroke="#555" stroke-width="3.5" d="M66 102 Q80 95 94 103"/>
+        <path fill="none" stroke="#555" stroke-width="3.5" d="M134 102 Q120 95 106 103"/>
+        <!-- 鼻 -->
+        <path fill="none" stroke="#5a5a5a" stroke-width="2" d="M98 118 Q90 135 88 144 Q95 148 100 148 Q105 148 112 144 Q110 135 102 118"/>
+        <!-- 长胡须 -->
+        <path class="hair" d="M62 148 Q52 162 50 185 Q50 210 58 235 Q68 255 85 260 L115 260 Q132 255 142 235 Q150 210 150 185 Q148 162 138 148 Q128 158 115 165 Q105 170 100 170 Q95 170 85 165 Q72 158 62 148Z"/>
+        <!-- 衣 -->
+        <path class="cloth" d="M42 255 Q40 258 42 260 L158 260 Q160 258 158 255 Q148 248 100 246 Q52 248 42 255Z"/>
+      </svg>
+      <span class="formula">Vitruvian</span>
+      <span class="label">Leonardo da Vinci</span>
+    </div>
+
+  </div>
+
+  <div class="overlay"></div>
+  <div class="glow-ring"></div>
+  <div class="glow-ring"></div>
+
+  <div class="prompt-box">
+    <div class="prompt-text">点击即可获得同款大脑！</div>
+    <div class="prompt-sub">click to upgrade</div>
+  </div>
+</div>
+
+<!-- 加载界面 -->
+<div id="scene-loading">
+  <div class="loading-title">大脑加载中...</div>
+  <div class="loading-bar-track">
+    <div class="loading-bar-fill" id="loading-bar"></div>
+  </div>
+  <div class="loading-percent" id="loading-percent">0%</div>
+</div>
+
+<!-- 结果界面 -->
+<div id="scene-result">
+  <canvas id="particles"></canvas>
+  <div class="glow-center"></div>
+  <div class="result-text" id="result-text">
+    <span class="line line1">恭喜您已获得同款大脑！</span>
+    <span class="line line2">期末考的都会，蒙的都对！</span>
+    <span class="line line3">去吧！</span>
+  </div>
+</div>
+
+<script>
+document.getElementById('scene-initial').addEventListener('click',function(){
+  this.classList.add('fade-out');
+
+  // 显示加载界面
+  setTimeout(function(){document.getElementById('scene-loading').classList.add('active')},500);
+
+  // 进度条动画 2秒
+  var bar=document.getElementById('loading-bar');
+  var pct=document.getElementById('loading-percent');
+  var start=Date.now(),duration=2000;
+  var timer=setInterval(function(){
+    var elapsed=Date.now()-start;
+    var progress=Math.min(elapsed/duration,1);
+    var value=Math.round(progress*100);
+    bar.style.width=value+'%';
+    pct.textContent=value+'%';
+    if(progress>=1){
+      clearInterval(timer);
+      // 切到结果
+      setTimeout(function(){
+        document.getElementById('scene-loading').classList.remove('active');
+        setTimeout(function(){
+          document.getElementById('scene-result').classList.add('active');
+          setTimeout(function(){
+            var rt=document.getElementById('result-text');
+            rt.style.opacity='1';
+            rt.querySelectorAll('.line').forEach(function(l){l.classList.add('show')});
+          },300);
+        },400);
+      },300);
+    }
+  },16);
+
+  initParticles();
+});
+
+function initParticles(){
+  var c=document.getElementById('particles'),ctx=c.getContext('2d');
+  function resize(){c.width=innerWidth;c.height=innerHeight}
+  resize();window.addEventListener('resize',resize);
+  var pts=[];
+  for(var i=0;i<90;i++){
+    pts.push({
+      x:Math.random()*c.width,y:Math.random()*c.height,
+      r:Math.random()*2.5+.4,
+      vx:(Math.random()-.5)*.3,vy:-Math.random()*.6-.12,
+      a:Math.random()*.5+.3,
+      h:38+Math.random()*25
+    });
+  }
+  !function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    for(var i=0;i<pts.length;i++){
+      var p=pts[i];
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,6.283);
+      ctx.fillStyle='hsla('+p.h+',85%,68%,'+p.a+')';
+      ctx.fill();
+      p.x+=p.vx;p.y+=p.vy;p.a-=.0008;
+      if(p.y<-10||p.a<=0){
+        p.x=Math.random()*c.width;p.y=c.height+10;
+        p.a=Math.random()*.5+.3;
+      }
+    }
+    requestAnimationFrame(draw);
+  }();
+}
+</script>
+</body>
+</html>

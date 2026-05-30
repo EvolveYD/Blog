@@ -27,7 +27,10 @@ export default function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div className="z-10 w-full max-w-5xl text-center lg:text-left font-mono text-sm">
         <h1 className="hero-title text-4xl font-bold tracking-tight mb-4 text-blue-600">
-          EvolveYD&#39;s Blog
+          EvolveYD&#39;s Blog{' '}
+          <Link href="/sponsor" className="sponsor-btn">
+            赞助喵^•o•^ ੭
+          </Link>
         </h1>
         <p className="hero-desc text-lg text-gray-600 mb-8">
           欢迎来到我的技术成长空间 | 记录从 0 到 1 的构建之旅
@@ -39,6 +42,9 @@ export default function Home() {
           </Link>
           <Link href="/about" className="btn-outline px-6 py-2 border border-gray-300 rounded hover:bg-gray-100 transition-colors">
             关于我
+          </Link>
+          <Link href="/scientist-brain.html" target="_blank" className="btn-gold px-6 py-2 rounded transition-colors">
+            逢考必过
           </Link>
           <Link href="/quiz" className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
             知识问答

@@ -4,14 +4,16 @@ import { useState, useRef, useEffect } from 'react';
 
 export default function MusicPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [playing, setPlaying] = useState(false);
-  const [muted, setMuted] = useState(false);
+  const [playing, setPlaying] = useState(true);
+  const [muted, setMuted] = useState(true);
 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
     audio.loop = true;
     audio.volume = 0.5;
+    audio.muted = true;
+    audio.play().catch(() => {});
   }, []);
 
   function togglePlay() {
